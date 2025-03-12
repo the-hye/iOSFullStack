@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource {
+class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     let reuseIdentifire = "bts"
@@ -30,7 +30,6 @@ class ViewController: UIViewController, UITableViewDataSource {
                 members.append(btsMember)
             }
         }
-        print(members)
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,31 +37,6 @@ class ViewController: UIViewController, UITableViewDataSource {
         tableView.dataSource = self
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        bts.count
-        members.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifire)
-        if cell == nil {
-            cell = UITableViewCell(style: .default, reuseIdentifier: reuseIdentifire)
-        }
-        let member = members[indexPath.row]
-        var config = cell?.defaultContentConfiguration()
-        config?.text = member.name ?? ""
-        config?.textProperties.color = .orange
-        config?.textProperties.font = .systemFont(ofSize: 20, weight: .bold)
-        config?.secondaryText = member.desc ?? ""
-        config?.secondaryTextProperties.color = .gray
-        config?.secondaryTextProperties.font = .systemFont(ofSize: 15)
-        config?.image = UIImage(named: member.image ?? "")
-        config?.imageProperties.maximumSize = CGSize(width: 80, height: 100)
-        
-        cell?.contentConfiguration = config
-        
-        return cell!
-        
-    }
     //    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     //        var cell = tableView.dequeueReusableCell(withIdentifier: "bts")
     //
@@ -86,4 +60,17 @@ class ViewController: UIViewController, UITableViewDataSource {
     //        return cell!
     //    }
 }
+
+// MARK: - 사용자 정의 함수
+func add(_ a: Int, _ b:Int) { }
+
+// TODO: - 구현해야함
+func div(_ a: Int, _ b:Int) { }
+
+// FIXME: - 수정해야함
+// ???: - 반환값이 정수인가?
+func sub(_ a: Int, _ b:Int) { }
+
+// !!!: - 반환값 타입확인
+func mul(_ a: Int, _ b:Int) { }
 

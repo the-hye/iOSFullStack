@@ -31,6 +31,20 @@ class ViewController: UIViewController {
     @IBAction func takePicture(_ sender: Any) {
         self.present(camera, animated: true)
     }
+    @IBAction func chooseImage(_ sender: Any) {
+        let alert = UIAlertController(title: "사진 불러오기", message: "사진을 불러올 방식을 선택하세요", preferredStyle: .actionSheet)
+        let camera = UIAlertAction(title: "카메라로 찍기", style: .default) { _ in
+            self.present(self.camera, animated: true)
+        }
+        let album = UIAlertAction(title: "앨범에서 불러오기", style: .default) { _ in
+            self.present(self.picker!, animated: true)
+        }
+        let cancel = UIAlertAction(title: "취소", style: .cancel)
+        alert.addAction(camera)
+        alert.addAction(album)
+        alert.addAction(cancel)
+        present(alert, animated: true)
+    }
     
 }
 
@@ -54,7 +68,7 @@ extension ViewController: PHPickerViewControllerDelegate {
             if provider.canLoadObject(ofClass: UIImage.self) {
                 provider.loadObject(ofClass: UIImage.self) { image, error in
                     if let error {
-                        print("에러다")
+                        print("\(error.localizedDescription) 에러다")
                     }
                     if let image = image as? UIImage {
                         DispatchQueue.main.async {

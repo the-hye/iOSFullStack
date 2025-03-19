@@ -12,7 +12,7 @@ extension UIViewController {
         let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         return urls[0]
     }
-    func urlForFileName(_ fileName: String) -> URL {
+    func urlWithFileName(_ fileName: String) -> URL {
         let url = urlForDocuments()
         let fileURL = url.appendingPathComponent(fileName, conformingTo: .propertyList)
         

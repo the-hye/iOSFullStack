@@ -9,6 +9,7 @@ import UIKit
 import PhotosUI
 
 class AddViewController: UIViewController {
+    var bts: NSMutableArray?
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var textDesc: UITextField!
     @IBOutlet weak var textName: UITextField!
@@ -46,16 +47,28 @@ class AddViewController: UIViewController {
     }
     
     @IBAction func save(_ sender: Any) {
+        let imageName: String? = UUID().uuidString + ".png"
+        let data = imageView.image?.jpegData(compressionQuality: 0.5)
+        try? data?.write(to: urlWithFileName(imageName!))
+        print(urlWithFileName(imageName!))
+        
+        let newMember = ["nick": textNick.text!, "name": textName.text!, "desc": textDesc.text!, "image": imageName]
+        bts?.add(newMember)
+        
+        do {
+            try bts?.write(to: urlWithFileName("bts.plist"))
+        } catch {
+            print("저장 실패")
+            return
+        }
+        let alert = UIAlertController(title: "새 멤버 추가", message: "새로운 멤버 추가 성공", preferredStyle: .alert)
+        let action = UIAlertAction(title: "확인", style: .default) { _ in
+            self.performSegue(withIdentifier: "back", sender: self)
+//            self.navigationController?.popViewController(animated: true)
+        }
+        alert.addAction(action)
+        present(alert, animated: true)
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
 

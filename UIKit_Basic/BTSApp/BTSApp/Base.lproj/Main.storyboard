@@ -66,9 +66,11 @@
                         <outlet property="textDesc" destination="ucs-Al-6kD" id="9jH-pD-wzA"/>
                         <outlet property="textName" destination="agn-EZ-hcz" id="ohE-ec-G5V"/>
                         <outlet property="textNick" destination="RLK-Kj-Gdc" id="w7f-yJ-vwH"/>
+                        <segue destination="kDp-UC-qAP" kind="unwind" identifier="back" unwindAction="returnFromAddVC:" id="WAN-kH-z4v"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vra-Jj-Lx3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="kDp-UC-qAP" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="890.83969465648852" y="-695.07042253521126"/>
         </scene>
@@ -120,7 +122,7 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="eqf-uo-BsB" kind="show" id="P4d-2B-TGG"/>
+                                    <segue destination="eqf-uo-BsB" kind="show" identifier="detail" id="P4d-2B-TGG"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

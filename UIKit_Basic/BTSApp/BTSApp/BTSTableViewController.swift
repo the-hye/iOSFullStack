@@ -15,7 +15,7 @@ class BTSTableViewController: UITableViewController {
         super.viewDidLoad()
         self.navigationItem.title = "BTS"
         navigationItem.rightBarButtonItem = editButtonItem
-        let targetURL = urlForFileName(fileName)
+        let targetURL = urlWithFileName(fileName)
         let fileManager = FileManager.default
         
         if !fileManager.fileExists(atPath: targetURL.path()) {
@@ -28,6 +28,9 @@ class BTSTableViewController: UITableViewController {
         }
         bts = try? NSMutableArray(contentsOf: targetURL, error: ())
     }
+//    override func viewWillAppear(_ animated: Bool) {
+//        tableView.reloadData()
+//    }
     
     // MARK: - Table view data source
     
@@ -51,7 +54,12 @@ class BTSTableViewController: UITableViewController {
         let name = cell.viewWithTag(3) as? UILabel
         let desc = cell.viewWithTag(4) as? UILabel
         if let imageView = member["image"] {
-            image?.image = UIImage(named: imageView)
+            if imageView.starts(with: "bts") {
+                image?.image = UIImage(named: imageView)
+            } else {
+                let url = urlWithFileName(imageView)
+                image?.image = UIImage(contentsOfFile: url.path())
+            }
         }
         nick?.text = member["nick"]
         name?.text = member["name"]
@@ -59,7 +67,7 @@ class BTSTableViewController: UITableViewController {
         
         return cell
     }
-    
+
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
@@ -70,12 +78,12 @@ class BTSTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             bts?.removeObject(at: indexPath.row)
-            try? bts?.write(to: urlForFileName(fileName))
+            try? bts?.write(to: urlWithFileName(fileName))
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             let newMember = ["nick": "보검", "name": "박보검", "desc": "보검복지부", "image": "default"]
             bts?.insert(newMember, at: indexPath.row)
-            try? bts?.write(to: urlForFileName(fileName))
+            try? bts?.write(to: urlWithFileName(fileName))
             tableView.insertRows(at: [indexPath], with: .automatic)
         }
     }
@@ -85,7 +93,7 @@ class BTSTableViewController: UITableViewController {
         guard let temp  = bts?[fromIndexPath.row] else { return }
         bts?.removeObject(at: fromIndexPath.row)
         bts?.insert(temp, at: to.row)
-        try? bts?.write(to: urlForFileName(fileName))
+        try? bts?.write(to: urlWithFileName(fileName))
     }
     
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
@@ -96,23 +104,26 @@ class BTSTableViewController: UITableViewController {
         }
     }
     
-    /*
-     // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
-     return true
-     }
-     */
-    
+    @IBAction func returnFromAddVC(_ unwindSegue: UIStoryboardSegue) {
+        guard let bts else { return }
+        let indexPath = IndexPath(row: bts.count - 1, section: 0)
+        tableView.insertRows(at: [indexPath], with: .fade)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
     
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let detailVC = segue.destination as? DetailViewController,
-            let selectedIndexPath = tableView.indexPathForSelectedRow else { return }
-        
-        detailVC.member = bts?[selectedIndexPath.row] as? [String: String]
+        if segue.identifier == "detail" {
+            guard let detailVC = segue.destination as? DetailViewController,
+                  let selectedIndexPath = tableView.indexPathForSelectedRow else { return }
+            
+            detailVC.member = bts?[selectedIndexPath.row] as? [String: String]
+        } else {
+            guard let addVC = segue.destination as? AddViewController else { return }
+            addVC.bts = self.bts
+        }
     }
     
     

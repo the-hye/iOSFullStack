@@ -77,8 +77,18 @@ class BTSTableViewController: UITableViewController {
     // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            bts?.removeObject(at: indexPath.row)
-            try? bts?.write(to: urlWithFileName(fileName))
+            guard let bts else { return }
+            
+            if let member = bts[indexPath.row] as? [String: String],
+                let imageName = member["image"] {
+                if !imageName.starts(with: "bts") {
+                        let fileURL = urlWithFileName(fileName)
+                        try? FileManager.default.removeItem(at: fileURL)
+                    }
+                }
+            
+            bts.removeObject(at: indexPath.row)
+            try? bts.write(to: urlWithFileName(fileName))
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             let newMember = ["nick": "보검", "name": "박보검", "desc": "보검복지부", "image": "default"]

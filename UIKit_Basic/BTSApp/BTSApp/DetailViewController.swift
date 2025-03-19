@@ -16,10 +16,15 @@ class DetailViewController: UIViewController {
     var member: [String: String]?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         if let member = member {
             if let imageName = member["image"] {
-                imageView.image = UIImage(named: imageName)
+                if imageName.starts(with: "bts") {
+                    imageView.image = UIImage(named: imageName)
+                } else {
+                    let url = urlWithFileName(imageName)
+                    imageView.image = UIImage(contentsOfFile: url.path())
+                }
             }
             labelName.text = member["name"]
             labelNick.text = member["nick"]
